@@ -35,16 +35,24 @@
     console.log('API response:', data);
   }
 
+  function isoToDMY(isoDate: string) {
+    const [year, month, day] = isoDate.split('-');
+    return `${day}-${month}-${year}`;
+  }
+
   onMount(() => {
+    selectedDate = new Date().toISOString().split('T')[0];
+
     flatpickr(inputEl, {
-      dateFormat: 'Y-m-d',
+      dateFormat: 'd-m-Y',
+      defaultDate: isoToDMY(selectedDate),
       onChange: ([date]) => {
         selectedDate = date.toISOString().split('T')[0];
       }
     });
   });
   
-  let selectedDate = new Date().toISOString().split('T')[0];
+  let selectedDate: string;
   let inputEl: HTMLInputElement;
   let selectedWinner: player | null = null;
   let selectedLoser: player | null = null;
