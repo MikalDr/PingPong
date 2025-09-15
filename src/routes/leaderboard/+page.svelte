@@ -1,10 +1,5 @@
 <script lang="ts">
-    type Player = {
-		name: string;
-		wins: number;
-		losses: number;
-		rank: number;
-	};
+    import type { Player } from "$lib/types/player";
 
 	type PlayerWithDisplayName = Player & {
 		first: string;
@@ -12,56 +7,39 @@
 		displayName: string;
 	};
 
-    var leaderboard = {
-        1: {
-            name: "Benjamin Mulelid Godø",
-            wins: 10,
-            losses: 3,
-            rank: 1
-        },
-        2: {
-            name: "Vegard Aalstad Vasset",
-            wins: 12,
-            losses: 6,
-            rank: 2
-        },
-        4: {
-            name: "Vegard Dæmring",
-            wins: 0,
-            losses: 0,
-            rank: 4
-        },
-        3: {
-            name: "Mikal Drivenes",
-            wins: 10,
-            losses: 6,
-            rank: 3
+    import { onMount } from "svelte";
+
+    let leaderboard: Record<string, Player> = {};
+    let displayPlayers: PlayerWithDisplayName[] = [];
+
+    onMount(async () => {
+        leaderboard = await fetch('/api/leaderboard').then(res => res.json());
+
+        const sortedPlayers: Player[] = Object.values(leaderboard).sort((a, b) => a.elo - b.elo);
+
+        const parsedPlayers: (Player & { first: string; lastInitial: string })[] = sortedPlayers.map(player => {
+            const [first, ...rest] = player.name.split(' ');
+            const last = rest.at(-1) ?? '';
+            return {
+                ...player,
+                first,
+                lastInitial: last.charAt(0)
+            };
+        });
+
+        const nameCounts: Record<string, number> = {};
+        for (const p of parsedPlayers) {
+            nameCounts[p.first] = (nameCounts[p.first] || 0) + 1;
         }
-    }
 
-    const sortedPlayers: Player[] = Object.values(leaderboard).sort((a, b) => a.rank - b.rank);
-
-    const parsedPlayers: (Player & { first: string; lastInitial: string })[] = sortedPlayers.map(player => {
-		const [first, ...rest] = player.name.split(' ');
-		const last = rest.at(-1) ?? '';
-		return {
-			...player,
-			first,
-			lastInitial: last.charAt(0)
-		};
-	});
-    const nameCounts: Record<string, number> = {};
-	for (const p of parsedPlayers) {
-		nameCounts[p.first] = (nameCounts[p.first] || 0) + 1;
-	}
-
-	const displayPlayers: PlayerWithDisplayName[] = parsedPlayers.map(p => {
-		const displayName = nameCounts[p.first] > 1 ? `${p.first} ${p.lastInitial}.` : p.first;
-		return {
-			...p,
-			displayName
-		};
-	});
+        displayPlayers = parsedPlayers.map(p => {
+            const displayName = nameCounts[p.first] > 1 ? `${p.first} ${p.lastInitial}.` : p.first;
+            return {
+                ...p,
+                displayName
+            };
+        });
+    });
     
     </script>
 

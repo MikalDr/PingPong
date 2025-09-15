@@ -21,6 +21,7 @@
 		"vite": "^7.0.4"
 	},
 	"dependencies": {
+		"firebase": "^12.2.1",
 		"svelte-select": "^5.8.3"
 	}
 }

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     var player = {
         name: "Mikal",
         rating: "1100",

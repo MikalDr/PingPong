@@ -1,9 +1,14 @@
 import type { RequestHandler } from '@sveltejs/kit';
+import { db } from '$lib/firebase';
+import { collection, addDoc, getDocs, getDoc, setDoc, doc, runTransaction } from 'firebase/firestore';
+
+function calculateElo(winner: number, looser: number): number {
+  return 0; // placeholder, add ELO calculation logic here.
+}
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-
     const {
       date,
       winner,
@@ -12,39 +17,56 @@ export const POST: RequestHandler = async ({ request }) => {
       loserScore
     } = body;
 
-    // Implement Logic:
-    // Needs to create a match
-    // Needs to update ELO of Winner and Loser
-    // Needs to update ranking
+    console.log('Received match data:', body);
 
-    // Example player
-    var player = {
-        name: "Benjamin Mulelid Godø",
-        wins: 10,
-        losses: 3,    // Wins and Losses needs to query the match history, and aggregate the results.
-        rank: 2
-    }
+    // Stores the Match in Firestore
+    await addDoc(collection(db, 'matches'), {
+      date,
+      winner,
+      loser,
+      winnerScore,
+      loserScore
+    });
 
-    // Example Match
-    type match = {
-        date: string, // The month will be used for what season we are in.
-        winner: string,
-        loser: string,
-        winnerScore: number,
-        loserScore: number
-    }
+    // Update player elo and stats
+    const winnerRef = doc(db, 'players', winner);
+    const loserRef = doc(db, 'players', loser);
 
-    console.log('Match data received:', { date, winner, loser, winnerScore, loserScore });
+    await runTransaction(db, async (transaction) => {
+      const winnerSnap = await transaction.get(winnerRef);
+      const loserSnap = await transaction.get(loserRef);
 
+      const winnerData = winnerSnap.exists() ? winnerSnap.data()  : { name: winner, wins: 0, losses: 0, elo: 1000 };
+      const loserData = loserSnap.exists() ? loserSnap.data() : { name: loser, wins: 0, losses: 0, elo: 1000 };
+
+      const newWinnerElo = calculateElo(winnerData.elo, loserData.elo);
+      const newLoserElo = calculateElo(loserData.elo, winnerData.elo);
+
+      transaction.set(winnerRef, {
+        ...winnerData,
+        wins: winnerData.wins + 1,
+        elo: newWinnerElo
+      });
+
+      transaction.set(loserRef, {
+        ...loserData,
+        losses: loserData.losses + 1,
+        elo: newLoserElo
+      });
+    });
+
+
+    // Responses just for debugging
     return new Response(
       JSON.stringify({ success: true, message: 'Match created!' }),
       { status: 200 }
     );
-  } catch (error) {
-    console.error('Error parsing match data:', error);
-    return new Response(
-      JSON.stringify({ success: false, message: 'Invalid request data' }),
-      { status: 400 }
-    );
+    } catch (error) {
+      console.error('Error creating match:', error);
+      return new Response(
+        JSON.stringify({ success: false, message: 'Error creating match' }),
+        { status: 400 }
+      );
   }
 };
+
