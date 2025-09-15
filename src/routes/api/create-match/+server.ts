@@ -59,13 +59,13 @@ export const POST: RequestHandler = async ({ request }) => {
     // Responses just for debugging
     return new Response(
       JSON.stringify({ success: true, message: 'Match created!' }),
-      { status: 200 }
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
     } catch (error) {
       console.error('Error creating match:', error);
       return new Response(
-        JSON.stringify({ success: false, message: 'Error creating match' }),
-        { status: 400 }
+        JSON.stringify({ success: false, message: 'Error creating match', error: error?.message }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
   }
 };
