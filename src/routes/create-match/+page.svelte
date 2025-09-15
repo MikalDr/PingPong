@@ -84,7 +84,7 @@
     <h3>Loser's score</h3>
     <input class="phone-item" bind:value={loserScore}>
 
-    <a class="button" on:click={createMatch}>Create Match</a>
+    <button class="button" type="button" on:click={createMatch}>Create Match</button>
 
     <a class="button" href="/">Go Back</a>
   </div>
