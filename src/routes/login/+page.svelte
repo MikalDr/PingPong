@@ -10,6 +10,8 @@
   }
 </script>
 
-<button on:click={loginWithGoogle} class="button">
-  Login with Google
-</button>
+<div class="column">
+    <button on:click={loginWithGoogle} class="button">
+    Login with Google
+    </button>
+</div>

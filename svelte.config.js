@@ -1,11 +1,9 @@
-import adapter from '@sveltejs/adapter-static';
+import adapter from '@sveltejs/adapter-firebase';
 
 export default {
   kit: {
     adapter: adapter({
-      pages: 'build',
-      assets: 'build',
-      fallback: 'index.html'
+      functionName: 'ssr'
     })
   }
 };
