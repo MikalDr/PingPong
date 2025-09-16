@@ -48,17 +48,22 @@
     }
 
     .button {
+        display: block;
         background-color: #D0022E;
         color: white;
         padding: 1rem;
-        width: 70%;
+        width: 100%;
         border-radius: 3rem;
+        margin: 0;
         font-size: x-large;
         text-align: center;
         text-decoration: none;
+        border: none;
+        box-sizing: border-box;
     }
     .button:hover {
         background-color: #9e0123;
+        cursor: pointer;
     }
 
     .button:active {
