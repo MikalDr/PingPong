@@ -1,12 +1,59 @@
 <script lang="ts">
-    var player = {
-        name: "Mikal",
-        rating: "1100",
-        wins: "9",
-        losses: "1",
-        ranking: "4"
+    import { onMount } from "svelte";
+    import { user } from "$lib/stores/user";
+    import { auth } from "$lib/firebase";
+    import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
+    import { onAuthStateChanged } from "firebase/auth";
+
+    const db = auth ? getFirestore(auth.app) : undefined;
+
+    let player = {
+    name: "",
+    rating: 1100,
+    wins: 0,
+    losses: 0,
+    ranking: "0"
+    };
+
+    let matches: any[] = [];
+
+    $: if ($user) {
+        player.name = $user.displayName ?? "";
+
+        (async () => {
+            try {
+            if (!db) return;
+
+            const q1 = query(collection(db, "matches"), where("player1", "==", $user.uid));
+            const q2 = query(collection(db, "matches"), where("player2", "==", $user.uid));
+
+            const [snap1, snap2] = await Promise.all([getDocs(q1), getDocs(q2)]);
+
+            matches = [
+                ...snap1.docs.map(doc => doc.data()),
+                ...snap2.docs.map(doc => doc.data())
+            ];
+
+            player.wins = matches.filter(m => m.winner === $user.uid).length;
+            player.losses = matches.length - player.wins;
+
+            } catch (err) {
+            console.error("Error fetching matches:", err);
+            }
+        })();
     }
+
+    onMount(() => {
+    if (auth) {
+        const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+            user.set(firebaseUser || null);
+        });
+        return () => unsubscribe();
+    }
+    return () => {};
+    });
 </script>
+
 
 <div class="column">
 
