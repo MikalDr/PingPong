@@ -23,32 +23,63 @@
 }
 </script>
 
-<div class="coulmn">
+<div class="column">
     <h1>All Games</h1>
-    <table class="leaderboard-table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Winner</th> 
-                <th>Loser</th>
-                <th>Winner Score</th>
-                <th>Loser Score</th>
-            </tr>
-        </thead>
-        <tbody>
-            {#each games as game}
+    <div class="leaderboard">
+        <table class="leaderboard-table">
+            <thead>
                 <tr>
-                    <td>{game.date}</td>
-                    <td>{game.winner}</td>
-                    <td>{game.loser}</td>
-                    <td>{game.winnerScore}</td>
-                    <td>{game.loserScore}</td>
+                    <th>Date</th>
+                    <th>Winner</th> 
+                    <th>Loser</th>
+                    <th>Winner Score</th>
+                    <th>Loser Score</th>
                 </tr>
-            {/each}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {#each games as game}
+                    <tr>
+                        <td>{game.date}</td>
+                        <td>{game.winner}</td>
+                        <td>{game.loser}</td>
+                        <td>{game.winnerScore}</td>
+                        <td>{game.loserScore}</td>
+                    </tr>
+                {/each}
+            </tbody>
+        </table>
+    </div>
     <div class="column">
         <a class="button" href="/">Go Back</a>
     </div>
 
 </div>
+
+<style>
+    .column {
+        margin: 1rem;
+    }
+    .leaderboard{
+        max-height: 70vh;
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        width: 100%;
+        margin-bottom: 2rem;
+    }
+    .leaderboard-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .leaderboard-table th,
+    .leaderboard-table td {
+        border: 1px solid #ddd;
+        padding: 0.5rem;
+        text-align: center;
+    }
+
+    .leaderboard-table thead {
+        background-color: #f0f0f0;
+        position: sticky;
+        top: 0;
+    }
+</style>
