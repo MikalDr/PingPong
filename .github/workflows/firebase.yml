@@ -35,6 +35,7 @@ jobs:
           cd functions
           npm install
           npm run build
+          firebase deploy --only functions
 
       # Deploy hosting + functions
       - name: Deploy to Firebase
