@@ -7,17 +7,24 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
 
       # Install and build frontend
       - name: Install frontend dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build frontend
         env:
@@ -25,22 +32,31 @@ jobs:
           VITE_FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
           VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
           VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
-          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
           VITE_FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
         run: npm run build
 
-      # Install functions dependencies
+      # Install and build functions (if you have a build step there)
       - name: Install functions dependencies
+        working-directory: ./functions
         run: |
-          cd functions
-          npm install
-          npm run build
+          npm ci
+          npm run build || echo "no build step in functions"
 
-      # Deploy hosting + functions
-      - name: Deploy to Firebase Hosting and Functions
-        uses: w9jds/firebase-action@v13
+      # Authenticate to GCP using the service account JSON stored in a GitHub Secret
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
         with:
-          args: deploy --only hosting,functions
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PINGPONG2S }}
+
+      - name: Install firebase-tools
+        run: npm install -g firebase-tools@latest
+
+      # Deploy hosting + functions from repo root (ensure firebase.json is at repo root)
+      - name: Deploy to Firebase (hosting + functions)
         env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PINGPONG2S }}
-          PROJECT_ID: pingpong2s
+          FIREBASE_PROJECT: pingpong2s
+        run: |
+          # sanity check (optional)
+          firebase projects:list --project "$FIREBASE_PROJECT" --json || true
+          firebase deploy --only hosting,functions --project "$FIREBASE_PROJECT"
