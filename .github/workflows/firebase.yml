@@ -17,10 +17,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 20
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       # Install and build frontend
       - name: Install frontend dependencies
@@ -43,13 +43,6 @@ jobs:
           npm ci
           npm run build || echo "no build step in functions"
 
-      # Temporarily disable predeploy hooks for lint
-      - name: Disable functions predeploy lint
-        run: |
-          cp functions/package.json functions/package.json.bak
-          jq 'del(.predeploy)' functions/package.json > functions/package.tmp.json
-          mv functions/package.tmp.json functions/package.json
-
       # Authenticate to Firebase
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
@@ -60,13 +53,12 @@ jobs:
       - name: Install Firebase CLI
         run: npm install -g firebase-tools@latest
 
-      # Deploy hosting + functions (lint skipped)
-      - name: Deploy to Firebase
+      # Deploy hosting + functions without lint
+      - name: Deploy to Firebase (skip lint)
         env:
           FIREBASE_PROJECT: pingpong2s
+          FUNCTIONS_EMULATOR: "false"
         run: |
-          firebase deploy --only hosting,functions --project "$FIREBASE_PROJECT"
-
-      # Restore original package.json
-      - name: Restore functions package.json
-        run: mv functions/package.json.bak functions/package.json
+          # Override predeploy hooks to skip lint
+          firebase functions:config:get || true
+          firebase deploy --only hosting,functions --project "$FIREBASE_PROJECT" --ignore-predeploy-hooks
