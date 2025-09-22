@@ -1,8 +1,41 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // --- Player profiles ---
+    match /players/{playerId} {
+      // Anyone logged in can read player profiles
+      allow read: if request.auth != null;
+
+      // Users can only update their own profile
+      allow write: if request.auth != null && request.auth.uid == playerId;
+    }
+
+    // --- Matches ---
+    match /matches/{matchId} {
+      // Anyone logged in can read matches
+      allow read: if request.auth != null;
+
+      // Only allow creating matches via your Cloud Functions service account
+      // This prevents users from injecting fake results directly from the frontend
+      allow create: if request.auth.token.firebase.sign_in_provider == "custom"
+                    || request.auth.token.admin == true;
+
+      // Prevent users from editing/deleting old matches
+      allow update, delete: if false;
+    }
+
+    // --- Leaderboard (if stored in Firestore) ---
+    match /leaderboard/{docId} {
+      allow read: if request.auth != null;
+      // Writes should be restricted to your backend
+      allow write: if request.auth.token.admin == true;
+    }
+
+    // --- Default deny ---
     match /{document=**} {
-      allow read, write: if true; // open for testing
+      allow read, write: if false;
     }
   }
 }
