@@ -1,5 +1,4 @@
 <div class="column">
-    <h1>Stats</h1>
-    No Stats to show yet!
-    <a class="button" href="/">Go Back</a>
+  <h1>No Stats available yet!</h1>
+  <a class="button" href="/">Go Back</a>
 </div>
