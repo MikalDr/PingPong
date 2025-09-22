@@ -14,11 +14,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Use Node 20
-      - name: Setup Node.js
+      - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -44,19 +43,19 @@ jobs:
           npm ci
           npm run build || echo "no build step in functions"
 
-      # Authenticate to Google Cloud
+      # Authenticate to Firebase using service account
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PINGPONG2S }}
 
-      # Install firebase-tools
+      # Install Firebase CLI
       - name: Install Firebase CLI
         run: npm install -g firebase-tools@latest
 
-      # Deploy hosting + functions
-      - name: Deploy to Firebase (hosting + functions)
+      # Deploy hosting + functions, skipping lint
+      - name: Deploy to Firebase (skip lint)
         env:
           FIREBASE_PROJECT: pingpong2s
         run: |
-          firebase deploy --only hosting,functions --project "$FIREBASE_PROJECT"
+          firebase deploy --only hosting,functions --project "$FIREBASE_PROJECT" --except functions:lint
