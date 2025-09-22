@@ -7,69 +7,48 @@
       "**/node_modules/**"
     ],
     "rewrites": [
-    {
-      "source": "/api/createMatch",
-      "function": "createMatch"
-    },
-    {
-      "source": "/api/getMatches",
-      "function": "getMatches"
-    },
-    {
-      "source": "/api/leaderboard",
-      "function": "getLeaderboard"
-    },
-    {
-      "source": "/api/playerStats",
-      "function": "getPlayerStats"
-    },
-    {
-      "source": "/api/getAvailableMonths",
-      "function": "getAvailableMonths"
-    },
-    {
-      "source": "**",
-      "destination": "/index.html"
-    }
-  ]
-
+      {
+        "source": "/api/createMatch",
+        "function": "createMatch"
+      },
+      {
+        "source": "/api/getMatches",
+        "function": "getMatches"
+      },
+      {
+        "source": "/api/leaderboard",
+        "function": "getLeaderboard"
+      },
+      {
+        "source": "/api/playerStats",
+        "function": "getPlayerStats"
+      },
+      {
+        "source": "/api/getAvailableMonths",
+        "function": "getAvailableMonths"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
   },
-  "functions": [
-    {
-      "source": "functions",
-      "codebase": "default",
-      "ignore": [
-        "node_modules",
-        ".git",
-        "firebase-debug.log",
-        "firebase-debug.*.log",
-        "*.local"
-      ],
-      "predeploy": [
-        "npm --prefix \"$RESOURCE_DIR\" run lint",
-        "npm --prefix \"$RESOURCE_DIR\" run build"
-      ]
-    }
-  ],
+  "functions": {
+    "source": "functions",
+    "codebase": "default",
+    "ignore": [
+      "node_modules",
+      ".git",
+      "firebase-debug.log",
+      "firebase-debug.*.log",
+      "*.local"
+    ],
+    "predeploy": [
+      "npm --prefix \"$RESOURCE_DIR\" run lint",
+      "npm --prefix \"$RESOURCE_DIR\" run build"
+    ]
+  },
   "firestore": {
     "rules": "firestore.rules"
-  },
-  "emulators": {
-    "auth": {
-      "port": 9099
-    },
-    "functions": {
-      "port": 5001
-    },
-    "firestore": {
-      "port": 8080
-    },
-    "hosting": {
-      "port": 5000
-    },
-    "ui": {
-      "enabled": true
-    },
-    "singleProjectMode": true
   }
 }
