@@ -21,7 +21,9 @@
   let winnerScore: number | null = null;
   let loserScore: number | null = null;
   var showOverlay = false;
-  var overlayMessage = "";
+
+  var statusMessage = "";
+  let statusColor = "";
 
   const API_URL = "/api/createMatch";
 
@@ -67,7 +69,8 @@
             launchConfetti();
           }
 
-        alert("Match successfully created!");
+        statusMessage = "Match successfully created!";
+        statusColor = "green";
         // Reset form
         selectedWinner = null;
         selectedLoser = null;
@@ -75,11 +78,13 @@
         loserScore = null;
         selectedDate = new Date().toISOString().split('T')[0];
       } else {
-        alert("Error creating match: " + data.error);
+        statusMessage = "Error creating match: " + data.error;
+        statusColor = "red";
       }
     } catch (error: any) {
       console.error(error);
-      alert("Error creating match: " + error.message);
+      statusMessage = "Error creating match: " + error.message;
+      statusColor = "red";
     }
   }
 
@@ -104,17 +109,9 @@
 </script>
 
 <div class="column">
-  {#if showOverlay}
-  <div class="overlay" on:click={() => (showOverlay = false)}>
-    <div class="overlay-content">
-      <h2>{overlayMessage}</h2>
-      <p>(Tap anywhere to dismiss)</p>
-    </div>
-  </div>
-  {/if}
   <div class="phone-width">
     <h1>Create Match!</h1>
-
+    <p style="color: {statusColor}">{statusMessage}</p>
     <h3>Match Date</h3>
     <input class="phone-item" bind:this={inputEl} placeholder="Select date" />
 
