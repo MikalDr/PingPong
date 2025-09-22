@@ -29,13 +29,6 @@ export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 
-// --- Emulator setup ---
-// Only connect to emulators when running locally
-if (location.hostname === 'localhost') {
-  connectFirestoreEmulator(db, 'localhost', 8080);
-  connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
-}
-
 // --- Persistent login ---
 // Keeps users logged in across tabs/reloads/browser restarts
 setPersistence(auth, browserLocalPersistence)
