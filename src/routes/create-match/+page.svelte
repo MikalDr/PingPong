@@ -66,14 +66,6 @@
           if (selectedWinner?.value === currentUserId) {
             launchConfetti();
           }
-          else if (selectedLoser?.value === currentUserId) {
-            const overlayMessage = getMotivationalMessage(winnerScore, loserScore);
-            showOverlay = true
-
-            setTimeout(() => {
-              showOverlay = false;
-            }, 10000);
-          }
 
         alert("Match successfully created!");
         // Reset form
