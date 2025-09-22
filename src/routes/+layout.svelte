@@ -24,6 +24,11 @@
   });
 </script>
 
+<svelte:head>
+  <title>Ping Pong</title>
+  <link rel="icon" type="image/png" href="/bordtennis.ico" />
+</svelte:head>
+
 {#if checking}
   <div class="loading">Loading...</div>
 {:else}
