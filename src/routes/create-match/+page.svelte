@@ -2,37 +2,93 @@
   import Select from 'svelte-select';
   import flatpickr from 'flatpickr';
   import 'flatpickr/dist/flatpickr.css';
-    import { onMount } from 'svelte';
+  import { launchConfetti } from "$lib/utils/confetti";
+  import { getMotivationalMessage } from '$lib/utils/motivation';
+  import { onMount } from 'svelte';
+  import { collection, getDocs } from 'firebase/firestore';
+  import { db } from '$lib/firebase';
+  import { auth } from '$lib/firebase';
 
-  type player = {
-    label: string,
-    value: string
+  type Player = { label: string; value: string; };
+
+  let players: Player[] = [];
+  let filteredLosers: Player[] = [];
+
+  let selectedDate: string;
+  let inputEl: HTMLInputElement;
+  let selectedWinner: Player | null = null;
+  let selectedLoser: Player | null = null;
+  let winnerScore: number | null = null;
+  let loserScore: number | null = null;
+  var showOverlay = false;
+  var overlayMessage = "";
+
+  const API_URL = "/api/createMatch";
+
+  async function fetchPlayers() {
+    const querySnapshot = await getDocs(collection(db, 'players'));
+    players = querySnapshot.docs.map(doc => ({
+      label: doc.data().name,
+      value: doc.id
+    }));
+
+    if (players.length === 0) {
+      players = [{ label: 'Test Player', value: 'test_player' }];
+    }
   }
 
-  let players = [
-    { label: "Benjamin", value: "apple" },
-    { label: "Vegard", value: "banana" },
-    { label: "Mikal", value: "orange" }
-  ];
+  $: filteredLosers = players.filter(p => selectedWinner ? p.value !== selectedWinner.value : true);
 
-  // This will query the defined create-match API, defined in api/create-match/+server.ts
   async function createMatch() {
-      const res = await fetch('/api/create-match', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        date: selectedDate,
-        winner: selectedWinner?.value,
-        loser: selectedLoser?.value,
-        winnerScore,
-        loserScore
-      })
-    });
+    if (!selectedWinner || !selectedLoser || winnerScore === null || loserScore === null) {
+      alert("Please fill in all fields!");
+      return;
+    }
 
-    const data = await res.json();
-    console.log('API response:', data);
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date: selectedDate,
+          winner: selectedWinner.value,
+          loser: selectedLoser.value,
+          winnerScore,
+          loserScore
+        })
+      });
+
+      const data = await res.json();
+      console.log('API response:', data);
+
+      if (data.success) {
+          const currentUserId = auth.currentUser?.uid;
+          if (selectedWinner?.value === currentUserId) {
+            launchConfetti();
+          }
+          else if (selectedLoser?.value === currentUserId) {
+            const overlayMessage = getMotivationalMessage(winnerScore, loserScore);
+            showOverlay = true
+
+            setTimeout(() => {
+              showOverlay = false;
+            }, 10000);
+          }
+
+        alert("Match successfully created!");
+        // Reset form
+        selectedWinner = null;
+        selectedLoser = null;
+        winnerScore = null;
+        loserScore = null;
+        selectedDate = new Date().toISOString().split('T')[0];
+      } else {
+        alert("Error creating match: " + data.error);
+      }
+    } catch (error: any) {
+      console.error(error);
+      alert("Error creating match: " + error.message);
+    }
   }
 
   function isoToDMY(isoDate: string) {
@@ -40,7 +96,9 @@
     return `${day}-${month}-${year}`;
   }
 
-  onMount(() => {
+  onMount(async () => {
+    await fetchPlayers();
+
     selectedDate = new Date().toISOString().split('T')[0];
 
     flatpickr(inputEl, {
@@ -51,69 +109,83 @@
       }
     });
   });
-  
-  let selectedDate: string;
-  let inputEl: HTMLInputElement;
-  let selectedWinner: player | null = null;
-  let selectedLoser: player | null = null;
-  let winnerScore: number | null = null;
-  let loserScore: number | null = null;
 </script>
+
 <div class="column">
+  {#if showOverlay}
+  <div class="overlay" on:click={() => (showOverlay = false)}>
+    <div class="overlay-content">
+      <h2>{overlayMessage}</h2>
+      <p>(Tap anywhere to dismiss)</p>
+    </div>
+  </div>
+  {/if}
   <div class="phone-width">
     <h1>Create Match!</h1>
 
     <h3>Match Date</h3>
     <input class="phone-item" bind:this={inputEl} placeholder="Select date" />
+
     <h3>Winner</h3>
     <Select
-    class="phone-item"
-    items={players}
-    bind:value={selectedWinner}
-    placeholder="Search or select..."
+      class="phone-item"
+      items={players}
+      bind:value={selectedWinner}
+      placeholder="Select winner"
     />
+
     <h3>Winner's Score</h3>
-    <input class="phone-item" bind:value={winnerScore}>
+    <input class="phone-item" type="number" bind:value={winnerScore} />
+
     <h3>Loser</h3>
     <Select
-    items={players}
-    class="phone-item"
-    bind:value={selectedLoser}
-    placeholder="Search or select..."
+      class="phone-item"
+      items={filteredLosers}
+      bind:value={selectedLoser}
+      placeholder="Select loser"
     />
-    <h3>Loser's score</h3>
-    <input class="phone-item" bind:value={loserScore}>
+
+    <h3>Loser's Score</h3>
+    <input class="phone-item" type="number" bind:value={loserScore} />
 
     <button class="button" type="button" on:click={createMatch}>Create Match</button>
-
     <a class="button" href="/">Go Back</a>
   </div>
 </div>
 
 <style>
-    .phone-width h3 {
-      margin: 0;
-    }
-    .phone-item {
-      width: 95%;
-      border-color: #D8DBDF;
-      border-style: solid;
-      border-width: 1.5px;
-      border-radius: .25rem;
-      height: 2rem;
-      margin: 1rem;
-    }
+  .phone-width h3 {
+    margin: 0;
+  }
+  .phone-item {
+    width: 95%;
+    border-color: #D8DBDF;
+    border-style: solid;
+    border-width: 1.5px;
+    border-radius: .25rem;
+    height: 2rem;
+    margin: 1rem;
+  }
+  @media (min-width: 768px) {
     .phone-width {
-        display: flex;
-        flex-direction: column;
-        gap: .5rem;
-        text-align: center;
-        align-items: center;
-        width: 80%;
+      width: 20rem;
     }
-    @media (min-width: 768px) {
-      .phone-width {
-        width: 20rem;
-      }
-    }
+  }
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    cursor: pointer;
+  }
+  .overlay-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+    max-width: 90%;
+  }
 </style>

@@ -65,9 +65,23 @@
         background-color: #9e0123;
         cursor: pointer;
     }
+    .phone-width {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+        text-align: center;
+        align-items: center;
+        width: 80%;
+    }
 
     .button:active {
         background-color: #5f0015;
+    }
+    .leaderboard-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        font-size: .85rem;
     }
     
     @media (min-width: 768px) {
@@ -90,5 +104,11 @@
         font-size: x-large;
         text-align: center;
         text-decoration: none;
+    }
+    .leaderboard-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        font-size: 1rem;
     }
     }
