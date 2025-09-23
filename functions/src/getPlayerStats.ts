@@ -1,6 +1,9 @@
 // functions/getPlayerStats.ts
 import * as functions from "firebase-functions";
 import { db } from "./admin";
+import { setGlobalOptions } from "firebase-functions/v2";
+
+setGlobalOptions({ region: 'europe-west1' });
 
 export const getPlayerStats = functions.https.onRequest(async (req, res) => {
   try {

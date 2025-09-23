@@ -2,6 +2,9 @@
 import * as functions from "firebase-functions";
 import corsLib from "cors";
 import { db } from "./admin";
+import { setGlobalOptions } from "firebase-functions/v2";
+
+setGlobalOptions({ region: 'europe-west1' });
 
 const cors = corsLib({ origin: true }); // allow all origins
 
