@@ -13,6 +13,7 @@ import { getMatches } from './getMatches';
 import { getLeaderboard } from './getLeaderboard';
 import { getPlayerStats } from './getPlayerStats';
 import { getAvailableMonths } from './getAvailableMonths';
+import { geminiResponse } from './getGeminiResponse';
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
@@ -33,6 +34,7 @@ exports.getMatches = getMatches;
 exports.getLeaderboard = getLeaderboard;
 exports.getPlayerStats = getPlayerStats;
 exports.getAvailableMonths = getAvailableMonths;
+exports.geminiResponse = geminiResponse;
 
 // export const helloWorld = onRequest((request, response) => {
 //   logger.info("Hello logs!", {structuredData: true});
