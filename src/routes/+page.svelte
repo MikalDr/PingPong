@@ -164,6 +164,19 @@
   margin-left: -6px;
   margin-bottom: -12px;
 }
+
+.speech-bubble.typing {
+  position: relative;
+  background: #F07D00;
+  border-radius: 1rem;
+  padding: 1rem;
+  max-width: 300px;
+  color: #fff;
+  display: flex;
+  justify-content: flex-start;
+  gap: 12px; /* increased spacing between dots */
+}
+
 .speech-bubble.typing span {
   width: 8px;
   height: 8px;
@@ -183,8 +196,31 @@
   animation-delay: 0.4s;
 }
 
+.speech-bubble.typing span:nth-child(1) { animation-delay: 0s; }
+.speech-bubble.typing span:nth-child(2) { animation-delay: 0.2s; }
+.speech-bubble.typing span:nth-child(3) { animation-delay: 0.4s; }
+
 @keyframes blink {
   0%, 80%, 100% { opacity: 0; }
   40% { opacity: 1; }
 }
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.speech-bubble.pop {
+  animation: popIn 0.3s ease-out;
+}
+
 </style>
