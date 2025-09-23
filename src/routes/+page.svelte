@@ -32,7 +32,7 @@
   }
   
   try {
-    const res = await fetch('/api/gemini-response', {
+    const res = await fetch('/apis/gemini-response', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
