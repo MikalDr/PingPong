@@ -48,7 +48,15 @@ export const getMatches = functions.https.onRequest((req, res) => {
 
           return {
             id: doc.id,
-            date: data.date.toDate().toISOString().split("T")[0],
+            date: (() => {
+              const d = data.date.toDate();
+              const hours = String(d.getHours()).padStart(2, "0");
+              const minutes = String(d.getMinutes()).padStart(2, "0");
+              const day = String(d.getDate()).padStart(2, "0");
+              const month = String(d.getMonth() + 1).padStart(2, "0");
+              const year = d.getFullYear();
+              return `${day}-${month}-${year} ${hours}:${minutes}`;
+            })(),
             winner: winnerDoc.data()?.name,
             loser: loserDoc.data()?.name,
             winnerScore: data.winnerScore,

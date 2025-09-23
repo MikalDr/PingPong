@@ -45,12 +45,6 @@
     }
   }
 
-  function handleMonthChange() {
-    if (!selectedMonth) return;
-    const [year, month] = selectedMonth.split("-").map(Number);
-    fetchMatches(year, month);
-  }
-
   onMount(async () => {
     await fetchMatches(currentYear, currentMonth);
     selectedMonth = currentKey;
@@ -69,15 +63,6 @@
 
 <div class="column">
   <h1>All Games</h1>
-
-  <!-- <select bind:value={selectedMonth} on:change={handleMonthChange}>
-    <option disabled value="">Choose month</option>
-    {#each months as m}
-      <option value={`${m.year}-${m.month}`}>
-        {m.year}-{String(m.month).padStart(2, "0")}
-      </option>
-    {/each}
-  </select> -->
 
   <div class="leaderboard">
     <table class="leaderboard-table">
