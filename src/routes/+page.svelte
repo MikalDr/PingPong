@@ -106,7 +106,7 @@
     <a class="button" href="/stats">Stats</a>
 
     {#if ai_response}
-      <div class="speech-bubble">{ai_response}</div>
+      <div class="speech-bubble pop">{ai_response}</div>
     {:else}
       <div class="speech-bubble typing">
         <span></span><span></span><span></span>
