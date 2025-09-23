@@ -87,6 +87,16 @@
     <a class="button" href="/stats">Stats</a>
   </div>
 
+  <div class= "spacer"></div>
   <p>Report issues or suggest features at</p>
   <p>https://github.com/MikalDr/PingPong/issues</p>
 </div>
+
+<style>
+  p {
+    margin:0;
+  }
+  .spacer {
+    height: 3rem;
+  }
+</style>
