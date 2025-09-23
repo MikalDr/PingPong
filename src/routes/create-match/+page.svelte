@@ -144,7 +144,7 @@
         const target = e.currentTarget as HTMLInputElement;
         const digits = target.value.replace(/\D/g, '');
         target.value = digits;
-        winnerScore = digits ? Number(digits) : null;
+        loserScore = digits ? Number(digits) : null;
       }}
     />
 
