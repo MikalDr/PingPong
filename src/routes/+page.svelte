@@ -89,7 +89,7 @@
 
   <div class= "spacer"></div>
   <p>Report issues or suggest features at</p>
-  <p>https://github.com/MikalDr/PingPong/issues</p>
+  <a href="https://github.com/MikalDr/PingPong/issues">Github</a>
 </div>
 
 <style>
@@ -97,6 +97,6 @@
     margin:0;
   }
   .spacer {
-    height: 3rem;
+    height: 2rem;
   }
 </style>
