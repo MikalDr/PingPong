@@ -32,32 +32,18 @@
   }
   
   try {
-    const apiKey = "YOUR_GEMINI_API_KEY"; // Erstatt med API key som skal lagre i firebase elns
-        const res = await fetch(
-          "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-goog-api-key": apiKey
-            },
-            body: JSON.stringify({
-              contents: [
-                {
-                  parts: [
-                    {
-                      text: `Write a sassy comment about ${player.name} being at position #${player.ranking} on the leaderboard. In norwegian, under 15 words.`
-                    }
-                  ]
-                }
-              ]
-            })
-          }
-        );
+    const res = await fetch('/api/gemini-response', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      playerName: player.name,
+      position: player.ranking
+    })
+    });
 
-      const data = await res.json();
-        // Extract the AI's response text
-      ai_response = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+    const data = await res.json();
+    ai_response = data.comment;
+
   } catch (error) {
     console.error("Error fetching ai response:", error);
   }
