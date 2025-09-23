@@ -1,9 +1,9 @@
-import { json } from '@sveltejs/kit';
+import { json, type RequestHandler } from '@sveltejs/kit';
 
-export async function POST({ request }) {
-  const { playerName, position } = await request.json();
+export const POST: RequestHandler = async ({ request }) => {
+  const { playerName, position }: { playerName: string; position: number } = await request.json();
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.VITE_GEMINI_API_KEY ?? '';
 
   const res = await fetch(
     'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
@@ -31,4 +31,4 @@ export async function POST({ request }) {
   const comment = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
 
   return json({ comment });
-}
+};
