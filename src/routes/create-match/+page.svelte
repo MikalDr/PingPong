@@ -43,7 +43,8 @@
 
   async function createMatch() {
     if (!selectedWinner || !selectedLoser || winnerScore === null || loserScore === null) {
-      alert("Please fill in all fields!");
+      statusMessage = "Please fill in all fields!";
+      statusColor = "red";
       return;
     }
 

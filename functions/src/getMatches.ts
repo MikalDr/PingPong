@@ -14,7 +14,11 @@ export const getMatches = functions.https.onRequest((req, res) => {
       }
 
       const { month, year, player1, player2 } = req.query;
-      let query: FirebaseFirestore.Query = db.collection("matches").orderBy("date", "desc");
+
+      // Use createdAt for reliable ordering
+      let query: FirebaseFirestore.Query = db
+        .collection("matches")
+        .orderBy("createdAt", "desc"); // newest first
 
       if (month && year) {
         const monthNum = parseInt(month as string, 10);
@@ -60,9 +64,7 @@ export const getMatches = functions.https.onRequest((req, res) => {
       );
 
       if (player1 && player2) {
-        matches = matches.filter(
-          (m) => m.players.includes(player2 as string)
-        );
+        matches = matches.filter((m) => m.players.includes(player2 as string));
       }
 
       res.status(200).json({ success: true, matches });
