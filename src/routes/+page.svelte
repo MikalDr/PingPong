@@ -112,14 +112,28 @@
     {/if}
   </div>
 
-  <div class="spacer"></div>
-  <p class="info">Report issues or suggest features at</p>
-  <a class="infolink" href="https://github.com/MikalDr/PingPong/issues">Github</a>
+  <div class="bottom-text">
+    <p class="info">Report issues or suggest features at</p>
+    <a class="infolink" href="https://github.com/MikalDr/PingPong/issues">Github</a>
+  </div>
 </div>
 
 <style>
   p { margin: 0; }
-  .spacer { height: 10rem; font-size: smaller;}
+  .bottom-text {
+    position: fixed;
+    bottom: 1rem;    
+    left: 50%;       
+    transform: translateX(-50%);
+    text-align: center;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    gap: 0.25rem;         
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.6rem;
+  }
   .info{ color: gray}
   .infolink{ color: lightblue}
 
@@ -138,7 +152,7 @@
   content: "";
   position: absolute;
   bottom: 0;
-  right: 20px;
+  left: 20px;
   width: 0;
   height: 0;
   border: 16px solid transparent;
