@@ -26,7 +26,10 @@
 
 <svelte:head>
   <title>Ping Pong</title>
-  <link rel="icon" type="image/png" href="/bordtennis.ico" />
+  <link rel="icon" type="image/x-icon" href="/bordtennis.ico" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/bordtennis-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/bordtennis-512.png" />
+  <link rel="apple-touch-icon" href="/bordtennis-192.png" />
 </svelte:head>
 
 {#if checking}

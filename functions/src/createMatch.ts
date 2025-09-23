@@ -1,4 +1,5 @@
 import * as functions from "firebase-functions";
+import { serverTimestamp } from 'firebase/firestore';
 import corsLib from "cors";
 import { db } from "./admin";
 
@@ -76,7 +77,8 @@ export const createMatch = functions.https.onRequest((req, res) => {
           loser,
           winnerScore,
           loserScore,
-          eloChange
+          eloChange,
+          createdAt: serverTimestamp(),
         });
       });
 
