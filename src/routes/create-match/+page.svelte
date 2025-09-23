@@ -119,7 +119,15 @@
     />
 
     <h3>Winner's Score</h3>
-    <input class="phone-item" type="number" bind:value={winnerScore} />
+    <input class="phone-item" type="number"
+      bind:value={winnerScore} 
+      on:input={(e: Event) => {
+        const target = e.currentTarget as HTMLInputElement;
+        const digits = target.value.replace(/\D/g, '');
+        target.value = digits;
+        winnerScore = digits ? Number(digits) : null;
+      }}
+    />
 
     <h3>Loser</h3>
     <Select
@@ -130,7 +138,15 @@
     />
 
     <h3>Loser's Score</h3>
-    <input class="phone-item" type="number" bind:value={loserScore} />
+    <input class="phone-item" type="number" 
+      bind:value={loserScore}
+      on:input={(e: Event) => {
+        const target = e.currentTarget as HTMLInputElement;
+        const digits = target.value.replace(/\D/g, '');
+        target.value = digits;
+        winnerScore = digits ? Number(digits) : null;
+      }}
+    />
 
     <button class="button" type="button" on:click={createMatch}>Create Match</button>
     <a class="button" href="/">Go Back</a>
