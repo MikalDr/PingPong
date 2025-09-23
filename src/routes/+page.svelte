@@ -104,9 +104,12 @@
     <a class="button" href="/leaderboard">Leaderboard</a>
     <a class="button" href="/games">All Games</a>
     <a class="button" href="/stats">Stats</a>
+
+    {if ai_response !== ""}
     <div class="speech-bubble">
       {ai_response}
     </div>
+    {/if}
   </div>
 
   <div class="spacer"></div>
