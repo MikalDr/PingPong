@@ -104,7 +104,9 @@
     <a class="button" href="/leaderboard">Leaderboard</a>
     <a class="button" href="/games">All Games</a>
     <a class="button" href="/stats">Stats</a>
-    <p>{ai_response}</p>
+    <div class="speech-bubble">
+      {ai_response}
+    </div>
   </div>
 
   <div class="spacer"></div>
@@ -114,5 +116,32 @@
 
 <style>
   p { margin: 0; }
-  .spacer { height: 2rem; }
+  .spacer { height: 2rem; font-size: smaller;}
+  .spacer p{ color: gray}
+  .spacer a{ color: lightblue}
+
+  .speech-bubble {
+  position: relative;
+  background: #F07D00;
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  max-width: 300px;
+  font-style: italic;
+  color: #ffffff;
+}
+
+.speech-bubble::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 20px;
+  width: 0;
+  height: 0;
+  border: 12px solid transparent;
+  border-top-color: #F07D00;
+  border-bottom: 0;
+  margin-left: -6px;
+  margin-bottom: -12px;
+}
 </style>
