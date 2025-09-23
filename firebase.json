@@ -54,7 +54,7 @@
       },
       {
         "source": "/api/geminiResponse",
-        "function": "getPlayerStats",
+        "function": "getGeminiResponse",
         "region": "europe-west1"
       },
       {
