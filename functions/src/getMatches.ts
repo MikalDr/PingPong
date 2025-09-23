@@ -5,7 +5,6 @@ import { db } from "./admin";
 import { setGlobalOptions } from "firebase-functions/v2";
 
 setGlobalOptions({ region: 'europe-west1' });
-
 const cors = corsLib({ origin: true });
 
 export const getMatches = functions.https.onRequest((req, res) => {
@@ -18,15 +17,14 @@ export const getMatches = functions.https.onRequest((req, res) => {
 
       const { month, year, player1, player2 } = req.query;
 
-      // Use createdAt for reliable ordering
       let query: FirebaseFirestore.Query = db
         .collection("matches")
-        .orderBy("createdAt", "desc"); // newest first
+        .orderBy("date", "desc");
 
       if (month && year) {
         const monthNum = parseInt(month as string, 10);
         const yearNum = parseInt(year as string, 10);
-
+        
         if (isNaN(monthNum) || isNaN(yearNum) || monthNum < 1 || monthNum > 12) {
           res.status(400).json({ success: false, message: "Invalid month or year" });
           return;
@@ -34,6 +32,7 @@ export const getMatches = functions.https.onRequest((req, res) => {
 
         const start = new Date(yearNum, monthNum - 1, 1);
         const end = new Date(yearNum, monthNum, 1);
+        
         query = query.where("date", ">=", start).where("date", "<", end);
       }
 
@@ -46,7 +45,6 @@ export const getMatches = functions.https.onRequest((req, res) => {
       }
 
       const snapshot = await query.get();
-
       let matches = await Promise.all(
         snapshot.docs.map(async (doc) => {
           const data = doc.data();
