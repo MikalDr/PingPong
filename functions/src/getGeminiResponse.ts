@@ -22,7 +22,7 @@ export const geminiResponse = functions
         return;
       }
 
-      const apiKey = process.env.GEMINI_API_KEY;
+      const apiKey = "AIzaSyCQdw-DDOWXtsJoHKWUhtL9M1-MlgramKs";
       if (!apiKey) {
         res.status(500).json({ error: "Server API key not configured" });
         return;

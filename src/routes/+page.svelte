@@ -71,3 +71,48 @@
     return () => {};
   });
 </script>
+
+<div class="column">
+  <h1>Ping Pong</h1>
+
+  <div class="column profile">
+    <h1>{player.name}</h1>
+    <div class="inline">
+      <h3 class="fade-text">ELO:</h3>
+      <h3>{player.rating}</h3>
+      <h3 class="fade-text">Rank:</h3>
+      <h3
+        class:gold-text={player.ranking === "1"}
+        class:silver-text={player.ranking === "2"}
+        class:bronze-text={player.ranking === "3"}>
+        #{player.ranking}
+      </h3>
+    </div>
+    <div class="inline">
+      <h3>W {player.wins}</h3>
+      <h3>L {player.losses}</h3>
+      <h3>
+        {player.wins + player.losses > 0 
+          ? (player.wins / (player.losses + player.wins) * 100).toFixed(1) 
+          : 0}%
+      </h3>
+    </div>
+  </div>
+
+  <div class="button-column phone-width">
+    <a class="button" href="/create-match">Create match</a>
+    <a class="button" href="/leaderboard">Leaderboard</a>
+    <a class="button" href="/games">All Games</a>
+    <a class="button" href="/stats">Stats</a>
+    <p>{ai_response}</p>
+  </div>
+
+  <div class="spacer"></div>
+  <p>Report issues or suggest features at</p>
+  <a href="https://github.com/MikalDr/PingPong/issues">Github</a>
+</div>
+
+<style>
+  p { margin: 0; }
+  .spacer { height: 2rem; }
+</style>
