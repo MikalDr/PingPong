@@ -42,10 +42,11 @@
     });
 
     const data = await res.json();
+    console.log(data)
     ai_response = data.comment;
-
+    
   } catch (error) {
-    console.error("Error fetching ai response:", error);
+    console.error("Error fetching ai response:", error)
   }
 }
 
