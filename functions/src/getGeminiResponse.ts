@@ -22,7 +22,7 @@ export const geminiResponse = functions
         return;
       }
 
-      const apiKey = "AIzaSyCQdw-DDOWXtsJoHKWUhtL9M1-MlgramKs";
+      const apiKey = "";
       if (!apiKey) {
         res.status(500).json({ error: "Server API key not configured" });
         return;
@@ -41,7 +41,7 @@ export const geminiResponse = functions
               {
                 parts: [
                   {
-                    text: `Write a sassy comment about ${playerName} being at position #${position} on the leaderboard. In Norwegian, under 15 words.`,
+                    text: `Write a sassy comment about ${playerName} being at position #${position} on the leaderboard, the game is PingPong (table tennis), make it humurous, and address the player directly. In Norwegian, under 15 words.`,
                   },
                 ],
               },
