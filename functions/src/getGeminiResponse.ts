@@ -1,10 +1,14 @@
 import * as functions from "firebase-functions";
 import { setGlobalOptions } from "firebase-functions/v2";
+import corsLib from "cors";
 
 setGlobalOptions({ region: 'europe-west1' });
 
+const cors = corsLib({ origin: true });
+
 export const geminiResponse = functions
   .https.onRequest(async (req, res) => {
+    cors(req, res, async () => {
     try {
       if (req.method !== "POST") {
         res.status(405).json({ error: "Method not allowed" });
@@ -62,4 +66,5 @@ export const geminiResponse = functions
       console.error("Function error:", err);
       res.status(500).json({ error: "Internal server error" });
     }
+    });
   });
