@@ -13,6 +13,8 @@
     ranking: "0"
   };
 
+  let ai_response = "";
+
   async function loadPlayerData(uid: string, displayName: string | null) {
   try {
     const res = await fetch(`/api/playerStats?uid=${uid}`);
@@ -27,6 +29,37 @@
     }
   } catch (err) {
     console.error("Error fetching player stats:", err);
+  }
+  
+  try {
+    const apiKey = "YOUR_GEMINI_API_KEY"; // Erstatt med API key som skal lagre i firebase elns
+        const res = await fetch(
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-goog-api-key": apiKey
+            },
+            body: JSON.stringify({
+              contents: [
+                {
+                  parts: [
+                    {
+                      text: `Write a sassy comment about ${player.name} being at position #${player.ranking} on the leaderboard. In norwegian, under 15 words.`
+                    }
+                  ]
+                }
+              ]
+            })
+          }
+        );
+
+      const data = await res.json();
+        // Extract the AI's response text
+      ai_response = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+  } catch (error) {
+    console.error("Error fetching ai response:", error);
   }
 }
 
@@ -85,6 +118,7 @@
     <a class="button" href="/leaderboard">Leaderboard</a>
     <a class="button" href="/games">All Games</a>
     <a class="button" href="/stats">Stats</a>
+    <p>{ai_response}</p>
   </div>
 
   <div class= "spacer"></div>
