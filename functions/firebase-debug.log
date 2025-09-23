@@ -1,0 +1,17 @@
+[debug] [2025-09-23T12:08:11.660Z] ----------------------------------------------------------------------
+[debug] [2025-09-23T12:08:11.663Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\mdrivenes\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only functions:geminiResponse
+[debug] [2025-09-23T12:08:11.663Z] CLI Version:   14.17.0
+[debug] [2025-09-23T12:08:11.663Z] Platform:      win32
+[debug] [2025-09-23T12:08:11.663Z] Node Version:  v22.16.0
+[debug] [2025-09-23T12:08:11.664Z] Time:          Tue Sep 23 2025 14:08:11 GMT+0200 (Central European Summer Time)
+[debug] [2025-09-23T12:08:11.664Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-09-23T12:08:11.666Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2025-09-23T12:08:11.883Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-09-23T12:08:11.884Z] > authorizing via signed-in user (meekaldrivenes@gmail.com)
+[debug] [2025-09-23T12:08:11.884Z] [iam] checking project pingpong2s for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2025-09-23T12:08:11.884Z] Checked if tokens are valid: true, expires at: 1758632389943
+[debug] [2025-09-23T12:08:11.885Z] Checked if tokens are valid: true, expires at: 1758632389943
+[debug] [2025-09-23T12:08:11.885Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/pingpong2s:testIamPermissions [none]
+[debug] [2025-09-23T12:08:11.885Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/pingpong2s:testIamPermissions x-goog-quota-user=projects/pingpong2s
+[debug] [2025-09-23T12:08:11.885Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/pingpong2s:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
