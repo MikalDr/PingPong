@@ -105,7 +105,7 @@
     <a class="button" href="/games">All Games</a>
     <a class="button" href="/stats">Stats</a>
 
-    {if ai_response !== ""}
+    {#if ai_response !== ""}
     <div class="speech-bubble">
       {ai_response}
     </div>
@@ -119,7 +119,7 @@
 
 <style>
   p { margin: 0; }
-  .spacer { height: 2rem; font-size: smaller;}
+  .spacer { height: 10rem; font-size: smaller;}
   .info{ color: gray}
   .infolink{ color: lightblue}
 
