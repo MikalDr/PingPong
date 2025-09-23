@@ -33,7 +33,7 @@
 
   async function fetchGeminiComment() {
     try {
-      const res = await fetch("/api/gemini-response", {
+      const res = await fetch("/api/geminiResponse", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
