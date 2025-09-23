@@ -110,15 +110,15 @@
   </div>
 
   <div class="spacer"></div>
-  <p>Report issues or suggest features at</p>
-  <a href="https://github.com/MikalDr/PingPong/issues">Github</a>
+  <p class="info">Report issues or suggest features at</p>
+  <a class="infolink" href="https://github.com/MikalDr/PingPong/issues">Github</a>
 </div>
 
 <style>
   p { margin: 0; }
   .spacer { height: 2rem; font-size: smaller;}
-  .spacer p{ color: gray}
-  .spacer a{ color: lightblue}
+  .info{ color: gray}
+  .infolink{ color: lightblue}
 
   .speech-bubble {
   position: relative;
@@ -135,10 +135,10 @@
   content: "";
   position: absolute;
   bottom: 0;
-  left: 20px;
+  right: 20px;
   width: 0;
   height: 0;
-  border: 12px solid transparent;
+  border: 16px solid transparent;
   border-top-color: #F07D00;
   border-bottom: 0;
   margin-left: -6px;
