@@ -86,4 +86,7 @@
     <a class="button" href="/games">All Games</a>
     <a class="button" href="/stats">Stats</a>
   </div>
+
+  <p>Report issues or suggest features at</p>
+  <p>https://github.com/MikalDr/PingPong/issues</p>
 </div>
