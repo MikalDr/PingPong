@@ -54,7 +54,7 @@
       },
       {
         "source": "/api/geminiResponse",
-        "function": "getGeminiResponse",
+        "function": "geminiResponse",
         "region": "europe-west1"
       },
       {
