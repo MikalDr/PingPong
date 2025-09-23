@@ -29,23 +29,28 @@
     "rewrites": [
       {
         "source": "/api/createMatch",
-        "function": "createMatch"
+        "function": "createMatch",
+        "region": "europe-west1"
       },
       {
         "source": "/api/getMatches",
-        "function": "getMatches"
+        "function": "getMatches",
+        "region": "europe-west1"
       },
       {
         "source": "/api/leaderboard",
-        "function": "getLeaderboard"
+        "function": "getLeaderboard",
+        "region": "europe-west1"
       },
       {
         "source": "/api/playerStats",
-        "function": "getPlayerStats"
+        "function": "getPlayerStats",
+        "region": "europe-west1"
       },
       {
         "source": "/api/getAvailableMonths",
-        "function": "getAvailableMonths"
+        "function": "getAvailableMonths",
+        "region": "europe-west1"
       },
       {
         "source": "**",
