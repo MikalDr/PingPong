@@ -13,6 +13,8 @@
     ranking: "0"
   };
 
+  let ai_response = "";
+
   async function loadPlayerData(uid: string, displayName: string | null) {
   try {
     const res = await fetch(`/api/playerStats?uid=${uid}`);
@@ -27,6 +29,23 @@
     }
   } catch (err) {
     console.error("Error fetching player stats:", err);
+  }
+  
+  try {
+    const res = await fetch('/api/gemini-response', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      playerName: player.name,
+      position: player.ranking
+    })
+    });
+
+    const data = await res.json();
+    ai_response = data.comment;
+
+  } catch (error) {
+    console.error("Error fetching ai response:", error);
   }
 }
 
@@ -85,6 +104,7 @@
     <a class="button" href="/leaderboard">Leaderboard</a>
     <a class="button" href="/games">All Games</a>
     <a class="button" href="/stats">Stats</a>
+    <p>{ai_response}</p>
   </div>
 
   <div class= "spacer"></div>
