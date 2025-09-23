@@ -105,11 +105,14 @@
     <a class="button" href="/games">All Games</a>
     <a class="button" href="/stats">Stats</a>
 
-    {#if ai_response !== ""}
-    <div class="speech-bubble">
-      {ai_response}
-    </div>
+    {#if ai_response}
+      <div class="speech-bubble">{ai_response}</div>
+    {:else}
+      <div class="speech-bubble typing">
+        <span></span><span></span><span></span>
+      </div>
     {/if}
+
   </div>
 
   <div class="bottom-text">
@@ -132,7 +135,7 @@
     gap: 0.25rem;         
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
-    font-size: 0.6rem;
+    font-size: 0.8rem;
   }
   .info{ color: gray}
   .infolink{ color: lightblue}
@@ -160,5 +163,28 @@
   border-bottom: 0;
   margin-left: -6px;
   margin-bottom: -12px;
+}
+.speech-bubble.typing span {
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: 50%;
+  display: inline-block;
+  animation: blink 1.4s infinite both;
+}
+
+.speech-bubble.typing span:nth-child(1) {
+  animation-delay: 0s;
+}
+.speech-bubble.typing span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.speech-bubble.typing span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0; }
+  40% { opacity: 1; }
 }
 </style>
