@@ -1,18 +1,20 @@
 import * as functions from "firebase-functions";
-import { serverTimestamp } from 'firebase/firestore';
-import corsLib from "cors";
 import { db } from "./admin";
+import { Timestamp } from "firebase-admin/firestore";
+import corsLib from "cors";
+import { setGlobalOptions } from "firebase-functions/v2";
 
+setGlobalOptions({ region: 'europe-west1' });
 const cors = corsLib({ origin: true });
 
-type eloChange = {
+type EloChange = {
   WinnerElo: number;
   gain: number;
   LoserElo: number;
-}
+};
 
 function calculateElo(winnerElo: number, loserElo: number): { newWinnerElo: number; newLoserElo: number } {
-  var k = 32;
+  const k = 32;
 
   const expectedWinner = 1 / (1 + Math.pow(10, (loserElo - winnerElo) / 400));
   const expectedLoser = 1 / (1 + Math.pow(10, (winnerElo - loserElo) / 400));
@@ -20,14 +22,15 @@ function calculateElo(winnerElo: number, loserElo: number): { newWinnerElo: numb
   const newWinnerRating = winnerElo + Math.round(k * (1 - expectedWinner));
   const newLoserRating = loserElo + Math.round(k * (0 - expectedLoser));
 
-  return {
-    newWinnerElo: newWinnerRating,
-    newLoserElo: newLoserRating,
-  };
+  return { newWinnerElo: newWinnerRating, newLoserElo: newLoserRating };
 }
 
-export const createMatch = functions.https.onRequest((req, res) => {
-  cors(req, res, async () => {
+export const createMatch = functions
+  .https.onRequest(async (req, res) => {
+    await new Promise<void>((resolve, reject) => {
+      cors(req, res, (err) => (err ? reject(err) : resolve()));
+    });
+
     try {
       if (req.method !== "POST") {
         res.status(405).json({ error: "Method not allowed" });
@@ -35,6 +38,11 @@ export const createMatch = functions.https.onRequest((req, res) => {
       }
 
       const { date, winner, loser, winnerScore, loserScore } = req.body;
+
+      if (!date || !winner || !loser || winnerScore === undefined || loserScore === undefined) {
+        res.status(400).json({ error: "Missing required fields" });
+        return;
+      }
 
       await db.runTransaction(async (transaction) => {
         const winnerRef = db.collection("players").doc(winner);
@@ -65,27 +73,25 @@ export const createMatch = functions.https.onRequest((req, res) => {
           elo: newLoserElo,
         });
 
-        var eloChange : eloChange = {
+        const eloChange: EloChange = {
           WinnerElo: winnerData.elo,
           LoserElo: loserData.elo,
           gain: newWinnerElo - winnerData.elo,
-        }
+        };
 
         transaction.set(db.collection("matches").doc(), {
-          date: new Date(date),
+          date: Timestamp.fromDate(new Date(date)),
           winner,
           loser,
           winnerScore,
           loserScore,
           eloChange,
-          createdAt: serverTimestamp(),
         });
       });
 
       res.status(200).json({ success: true });
     } catch (error: any) {
-      console.error("Error:", error);
+      console.error("Error creating match:", error);
       res.status(500).json({ success: false, error: error.message });
     }
   });
-});

@@ -3,7 +3,6 @@
   import flatpickr from 'flatpickr';
   import 'flatpickr/dist/flatpickr.css';
   import { launchConfetti } from "$lib/utils/confetti";
-  import { getMotivationalMessage } from '$lib/utils/motivation';
   import { onMount } from 'svelte';
   import { collection, getDocs } from 'firebase/firestore';
   import { db } from '$lib/firebase';
@@ -20,7 +19,6 @@
   let selectedLoser: Player | null = null;
   let winnerScore: number | null = null;
   let loserScore: number | null = null;
-  var showOverlay = false;
 
   var statusMessage = "";
   let statusColor = "";
@@ -42,7 +40,7 @@
   $: filteredLosers = players.filter(p => selectedWinner ? p.value !== selectedWinner.value : true);
 
   async function createMatch() {
-    if (!selectedWinner || !selectedLoser || winnerScore === null || loserScore === null) {
+    if (!selectedWinner || !selectedLoser || winnerScore === null || loserScore === null || !selectedDate) {
       statusMessage = "Please fill in all fields!";
       statusColor = "red";
       return;
@@ -65,10 +63,10 @@
       console.log('API response:', data);
 
       if (data.success) {
-          const currentUserId = auth.currentUser?.uid;
-          if (selectedWinner?.value === currentUserId) {
-            launchConfetti();
-          }
+        const currentUserId = auth.currentUser?.uid;
+        if (selectedWinner?.value === currentUserId) {
+          launchConfetti();
+        }
 
         statusMessage = "Match successfully created!";
         statusColor = "green";
@@ -77,7 +75,7 @@
         selectedLoser = null;
         winnerScore = null;
         loserScore = null;
-        selectedDate = new Date().toISOString().split('T')[0];
+        selectedDate = new Date().toISOString();
       } else {
         statusMessage = "Error creating match: " + data.error;
         statusColor = "red";
@@ -89,21 +87,17 @@
     }
   }
 
-  function isoToDMY(isoDate: string) {
-    const [year, month, day] = isoDate.split('-');
-    return `${day}-${month}-${year}`;
-  }
-
   onMount(async () => {
     await fetchPlayers();
 
-    selectedDate = new Date().toISOString().split('T')[0];
+    selectedDate = new Date().toISOString();
 
     flatpickr(inputEl, {
-      dateFormat: 'd-m-Y',
-      defaultDate: isoToDMY(selectedDate),
+      enableTime: true,
+      dateFormat: 'Y-m-d H:i',
+      defaultDate: new Date(),
       onChange: ([date]) => {
-        selectedDate = date.toISOString().split('T')[0];
+        selectedDate = date.toISOString();
       }
     });
   });
@@ -113,8 +107,8 @@
   <div class="phone-width">
     <h1>Create Match!</h1>
     <p style="color: {statusColor}">{statusMessage}</p>
-    <h3>Match Date</h3>
-    <input class="phone-item" bind:this={inputEl} placeholder="Select date" />
+    <h3>Match Date & Time</h3>
+    <input class="phone-item" bind:this={inputEl} placeholder="Select date and time" />
 
     <h3>Winner</h3>
     <Select
@@ -160,22 +154,5 @@
     .phone-width {
       width: 20rem;
     }
-  }
-  .overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-    cursor: pointer;
-  }
-  .overlay-content {
-    background: white;
-    padding: 2rem;
-    border-radius: 1rem;
-    text-align: center;
-    max-width: 90%;
   }
 </style>
