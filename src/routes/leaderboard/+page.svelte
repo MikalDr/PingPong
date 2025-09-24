@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Player } from "$lib/types/player";
+  import { onMount } from "svelte";
 
   type PlayerWithDisplayName = Player & {
     first: string;
@@ -8,17 +9,19 @@
     rank: number;
   };
 
-  import { onMount } from "svelte";
-
+  let allPlayers: PlayerWithDisplayName[] = [];
   let displayPlayers: PlayerWithDisplayName[] = [];
+
+  let sortBy: "rank" | "elo" | "winrate" = "rank";
+  let sortAsc: boolean = false; // default descending
 
   onMount(async () => {
     try {
       const leaderboardData: Record<string, Player> = await fetch('/api/leaderboard').then(res => res.json());
 
-      const sortedPlayers: Player[] = Object.values(leaderboardData).sort((a, b) => b.elo - a.elo); // descending
+      const sortedPlayers: Player[] = Object.values(leaderboardData).sort((a, b) => b.elo - a.elo);
 
-      const parsedPlayers: (Player & { first: string; lastInitial: string })[] = sortedPlayers.map(player => {
+      const parsedPlayers = sortedPlayers.map(player => {
         const [first, ...rest] = player.name.split(' ');
         const last = rest.at(-1) ?? '';
         return {
@@ -33,7 +36,7 @@
         nameCounts[p.first] = (nameCounts[p.first] || 0) + 1;
       }
 
-      displayPlayers = parsedPlayers.map((p, idx) => {
+      allPlayers = parsedPlayers.map((p, idx) => {
         const displayName = nameCounts[p.first] > 1 ? `${p.first} ${p.lastInitial}.` : p.first;
         return {
           ...p,
@@ -41,10 +44,40 @@
           rank: idx + 1
         };
       });
+
+      updateSort();
     } catch (err) {
       console.error("Error fetching leaderboard:", err);
     }
   });
+
+  function updateSort() {
+    displayPlayers = [...allPlayers].sort((a, b) => {
+      let result = 0;
+      if (sortBy === "rank") {
+        result = a.rank - b.rank;
+      }
+      if (sortBy === "elo") {
+        result = a.elo - b.elo;
+      }
+      if (sortBy === "winrate") {
+        const winRateA = a.wins + a.losses === 0 ? 0 : a.wins / (a.wins + a.losses);
+        const winRateB = b.wins + b.losses === 0 ? 0 : b.wins / (b.wins + b.losses);
+        result = winRateA - winRateB;
+      }
+      return sortAsc ? result : -result;
+    });
+  }
+
+  function handleHeaderClick(key: "rank" | "elo" | "winrate") {
+    if (sortBy === key) {
+      sortAsc = !sortAsc;
+    } else {
+      sortBy = key;
+      sortAsc = false;
+    }
+    updateSort();
+  }
 </script>
 
 <div class="column">
@@ -53,12 +86,18 @@
     <table class="leaderboard-table">
       <thead>
         <tr>
-          <th>Rank</th>
+          <th on:click={() => handleHeaderClick("rank")}>
+            Rank {sortBy === "rank" ? (sortAsc ? "↑" : "↓") : ""}
+          </th>
           <th>Name</th>
-          <th>ELO</th>
+          <th on:click={() => handleHeaderClick("elo")}>
+            ELO {sortBy === "elo" ? (sortAsc ? "↑" : "↓") : ""}
+          </th>
           <th>Wins</th>
           <th>Losses</th>
-          <th>Win Rate</th>
+          <th on:click={() => handleHeaderClick("winrate")}>
+            Win Rate {sortBy === "winrate" ? (sortAsc ? "↑" : "↓") : ""}
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -103,8 +142,12 @@
     border: 1px solid #ddd;
     padding: 0.5rem;
     text-align: center;
+    cursor: pointer;
+    user-select: none;
   }
-
+  .leaderboard-table th:hover {
+    background-color: #e0e0e0;
+  }
   .leaderboard-table thead {
     background-color: #f0f0f0;
     position: sticky;
