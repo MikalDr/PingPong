@@ -6,6 +6,7 @@ export interface PlayerData {
   rating: number;
   wins: number;
   losses: number;
+  photoURL?: string;
 }
 
 export const playerData = writable<PlayerData | null>(null);
@@ -24,6 +25,7 @@ async function fetchPlayerStats(uid: string, displayName: string | null): Promis
         rating: data.player.elo,
         wins: data.player.wins,
         losses: data.player.losses,
+        photoURL: data.player.photoURL || "" 
       };
     }
   } catch {

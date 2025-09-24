@@ -24,7 +24,9 @@
 
   {#if $playerData}
     <div class="column profile">
-      <img src="{$playerData.photoURL}" alt="Profile Picture" class="profile-pic" />
+      {#if $playerData?.photoURL}
+        <img src="{$playerData.photoURL}" alt="Profile Picture" class="profile-pic" />
+      {/if}
       <h1>{$playerData.name}</h1>
       <div class="inline">
         <h3 class="fade-text">ELO:</h3>
