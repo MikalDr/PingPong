@@ -24,10 +24,10 @@
 
   <div class="profile-wrapper">
     {#if $playerData}
+      {#if $playerData?.photoURL}
+        <img src="{$playerData.photoURL}" alt="Profile Picture" class="profile-pic" />
+      {/if}
       <div class="profile-card">
-        {#if $playerData?.photoURL}
-          <img src="{$playerData.photoURL}" alt="Profile Picture" class="profile-pic" />
-        {/if}
         <h1 class="player-name">{$playerData.name}</h1>
         <div class="stats-row">
           <div class="stat">
