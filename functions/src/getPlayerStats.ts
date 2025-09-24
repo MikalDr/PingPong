@@ -39,6 +39,7 @@ export const getPlayerStats = functions.https.onRequest(async (req, res) => {
         wins: playerData?.wins ?? 0,
         losses: playerData?.losses ?? 0,
         rank,
+        photoURL: playerData?.photoURL ?? "",
       },
     });
   } catch (err: any) {
