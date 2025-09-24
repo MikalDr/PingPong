@@ -14,7 +14,7 @@ export const aiResponse = writable<string>("");
 
 let hasLoaded = false;
 
-async function fetchPlayerStats(uid: string, displayName: string | null): Promise<PlayerData | null> {
+async function fetchPlayerStats(uid: string, displayName: string | null, rank: number | null): Promise<PlayerData | null> {
   try {
     const res = await fetch(`/api/playerStats?uid=${uid}`);
     const data: { success: boolean; player?: Player } = await res.json();
@@ -22,7 +22,7 @@ async function fetchPlayerStats(uid: string, displayName: string | null): Promis
     if (data.success && data.player) {
       return {
         name: data.player.name || displayName || "Unknown",
-        rating: data.player.elo,
+        rating: rank || 0,
         wins: data.player.wins,
         losses: data.player.losses,
         photoURL: data.player.photoURL || "" 
@@ -66,7 +66,7 @@ async function fetchPlayerRank(uid: string): Promise<number> {
 export async function refreshPlayerData(uid: string, displayName: string | null, force = false): Promise<void> {
   if (hasLoaded && !force) return;
 
-  const stats = await fetchPlayerStats(uid, displayName);
+  const stats = await fetchPlayerStats(uid, displayName, rank);
   playerData.set(stats);
 
   if (stats) {
