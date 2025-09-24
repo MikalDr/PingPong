@@ -22,32 +22,47 @@
 <div class="column">
   <h1>Ping Pong</h1>
 
-  {#if $playerData}
-    <div class="inline profile">
-      {#if $playerData?.photoURL}
-        <img src="{$playerData.photoURL}" alt="Profile Picture" class="profile-pic" />
-      {/if}
-      <div class="stats-column">
-        <h1>{$playerData.name}</h1>
-        <div class="inline">
-          <h3 class="fade-text">ELO:</h3>
-          <h3>{$playerData.rating}</h3>
+  <div class="profile-wrapper">
+    {#if $playerData}
+      <div class="profile-card">
+        {#if $playerData?.photoURL}
+          <img src="{$playerData.photoURL}" alt="Profile Picture" class="profile-pic" />
+        {/if}
+        <h1 class="player-name">{$playerData.name}</h1>
+        <div class="stats-row">
+          <div class="stat">
+            <h3>ELO:</h3>
+            <h3>{$playerData.rating}</h3>
+          </div>
+          <div class="stat">
+            <h3>W:</h3>
+            <h3>{$playerData.wins}</h3>
+          </div>
+          <div class="stat">
+            <h3>L:</h3>
+            <h3>{$playerData.losses}</h3>
+          </div>
+          <div class="stat">
+            <h3>Win%:</h3>
+            <h3>
+              {$playerData.wins + $playerData.losses > 0
+                ? (($playerData.wins / ($playerData.wins + $playerData.losses)) * 100).toFixed(1)
+                : 0}%
+            </h3>
+          </div>
         </div>
-        <div class="inline">
-          <h3>W {$playerData.wins}</h3>
-          <h3>L {$playerData.losses}</h3>
-          <h3>
-            {$playerData.wins + $playerData.losses > 0
-              ? (($playerData.wins / ($playerData.wins + $playerData.losses)) * 100).toFixed(1)
-              : 0}%
-          </h3>
-        </div>
-      </div>
-    </div>
 
-  {:else}
-    <p>Loading player...</p>
-  {/if}
+        {#if $aiResponse}
+          <div class="speech-bubble pop">{$aiResponse}</div>
+        {:else}
+          <div class="speech-bubble typing"><span></span><span></span><span></span></div>
+        {/if}
+      </div>
+    {:else}
+      <p>Loading player...</p>
+    {/if}
+  </div>
+
 
   <div class="button-column phone-width">
     <a class="button" href="/create-match">Create match</a>
@@ -70,14 +85,23 @@
 
 
 <style>
-  .inline.profile {
+  .profile-wrapper {
     display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+  }
+
+  .profile-card {
+    display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 1rem;
   }
   .profile-pic {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0;  
