@@ -13,7 +13,7 @@
   let displayPlayers: PlayerWithDisplayName[] = [];
 
   let sortBy: "rank" | "elo" | "winrate" = "rank";
-  let sortAsc: boolean = false; // default descending
+  let sortAsc: boolean = true;
 
   onMount(async () => {
     try {
