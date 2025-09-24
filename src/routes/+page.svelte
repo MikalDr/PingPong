@@ -4,6 +4,7 @@
   import { auth } from "$lib/firebase";
   import { onAuthStateChanged } from "firebase/auth";
   import type { Player } from "$lib/types/player";
+  import { user } from "$lib/stores/user";
 
   let player = {
     name: "",
