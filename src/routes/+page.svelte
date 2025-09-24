@@ -23,23 +23,25 @@
   <h1>Ping Pong</h1>
 
   {#if $playerData}
-    <div class="column profile">
+    <div class="inline profile">
       {#if $playerData?.photoURL}
         <img src="{$playerData.photoURL}" alt="Profile Picture" class="profile-pic" />
       {/if}
-      <h1>{$playerData.name}</h1>
-      <div class="inline">
-        <h3 class="fade-text">ELO:</h3>
-        <h3>{$playerData.rating}</h3>
-      </div>
-      <div class="inline">
-        <h3>W {$playerData.wins}</h3>
-        <h3>L {$playerData.losses}</h3>
-        <h3>
-          {$playerData.wins + $playerData.losses > 0
-            ? (($playerData.wins / ($playerData.wins + $playerData.losses)) * 100).toFixed(1)
-            : 0}%
-        </h3>
+      <div class="stats-column">
+        <h1>{$playerData.name}</h1>
+        <div class="inline">
+          <h3 class="fade-text">ELO:</h3>
+          <h3>{$playerData.rating}</h3>
+        </div>
+        <div class="inline">
+          <h3>W {$playerData.wins}</h3>
+          <h3>L {$playerData.losses}</h3>
+          <h3>
+            {$playerData.wins + $playerData.losses > 0
+              ? (($playerData.wins / ($playerData.wins + $playerData.losses)) * 100).toFixed(1)
+              : 0}%
+          </h3>
+        </div>
       </div>
     </div>
 
@@ -68,6 +70,25 @@
 
 
 <style>
+  .inline.profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .profile-pic {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;  
+  }
+  .stats-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+  }
+
   p { margin: 0; }
   .bottom-text {
     position: fixed;
