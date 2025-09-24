@@ -185,8 +185,12 @@
 
   .stats-row {
     display: flex;
+    flex-direction: row;
     gap: 2rem;
     justify-content: center;
+  }
+  .stat{
+    display: inline;
   }
 
 .speech-bubble.typing span:nth-child(1) { animation-delay: 0s; }
