@@ -7,6 +7,7 @@ export interface PlayerData {
   wins: number;
   losses: number;
   photoURL?: string;
+  rank: number;
 }
 
 export const playerData = writable<PlayerData | null>(null);
@@ -14,7 +15,7 @@ export const aiResponse = writable<string>("");
 
 let hasLoaded = false;
 
-async function fetchPlayerStats(uid: string, displayName: string | null, rank: number | null): Promise<PlayerData | null> {
+async function fetchPlayerStats(uid: string, displayName: string | null): Promise<PlayerData | null> {
   try {
     const res = await fetch(`/api/playerStats?uid=${uid}`);
     const data: { success: boolean; player?: Player } = await res.json();
@@ -22,10 +23,11 @@ async function fetchPlayerStats(uid: string, displayName: string | null, rank: n
     if (data.success && data.player) {
       return {
         name: data.player.name || displayName || "Unknown",
-        rating: rank || 0,
+        rating: data.player.elo,
         wins: data.player.wins,
         losses: data.player.losses,
-        photoURL: data.player.photoURL || "" 
+        photoURL: data.player.photoURL || "" ,
+        rank: 1000,
       };
     }
   } catch {
@@ -66,11 +68,13 @@ async function fetchPlayerRank(uid: string): Promise<number> {
 export async function refreshPlayerData(uid: string, displayName: string | null, force = false): Promise<void> {
   if (hasLoaded && !force) return;
 
-  const stats = await fetchPlayerStats(uid, displayName, rank);
+  const stats = await fetchPlayerStats(uid, displayName);
   playerData.set(stats);
+  
 
   if (stats) {
     const rank = await fetchPlayerRank(uid);
+    playerData.rank = rank;
     const comment = await fetchGeminiComment(stats.name, rank);
     aiResponse.set(comment);
   } else {
