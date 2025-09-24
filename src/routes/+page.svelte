@@ -40,11 +40,6 @@
       </div>
     </div>
 
-    {#if $aiResponse}
-      <div class="speech-bubble pop">{$aiResponse}</div>
-    {:else}
-      <div class="speech-bubble typing"><span></span><span></span><span></span></div>
-    {/if}
   {:else}
     <p>Loading player...</p>
   {/if}
@@ -54,6 +49,12 @@
     <a class="button" href="/leaderboard">Leaderboard</a>
     <a class="button" href="/games">All Games</a>
     <a class="button" href="/stats">Stats</a>
+
+    {#if $aiResponse}
+      <div class="speech-bubble pop">{$aiResponse}</div>
+    {:else}
+      <div class="speech-bubble typing"><span></span><span></span><span></span></div>
+    {/if}
   </div>
 
   <div class="bottom-text">
