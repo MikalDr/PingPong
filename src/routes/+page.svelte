@@ -34,6 +34,8 @@
             <h3>ELO:</h3>
             <h3>{$playerData.rating}</h3>
           </div>
+        </div>
+        <div class="stats-row">
           <div class="stat">
             <h3>W:</h3>
             <h3>{$playerData.wins}</h3>
@@ -105,12 +107,6 @@
     border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0;  
-  }
-  .stats-column {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 100%;
   }
 
   p { margin: 0; }
@@ -186,6 +182,12 @@
 .speech-bubble.typing span:nth-child(3) {
   animation-delay: 0.4s;
 }
+
+  .stats-row {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+  }
 
 .speech-bubble.typing span:nth-child(1) { animation-delay: 0s; }
 .speech-bubble.typing span:nth-child(2) { animation-delay: 0.2s; }
