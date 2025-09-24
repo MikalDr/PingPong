@@ -91,8 +91,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    flex-direction: column;
+    height: auto;
+    flex-direction: row;
   }
 
   .profile-card {
