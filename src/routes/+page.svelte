@@ -1,8 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { user } from "$lib/stores/user";
+  import { playerData, aiResponse } from "$lib/stores/playerData";
   import { auth } from "$lib/firebase";
   import { onAuthStateChanged } from "firebase/auth";
+  import type { Player } from "$lib/types/player";
 
   let player = {
     name: "",
@@ -14,44 +15,57 @@
 
   let ai_response = "";
 
-  async function fetchPlayerStats(uid: string, displayName: string | null) {
+  export async function fetchPlayerStats(uid: string, displayName: string | null): Promise<void> {
     try {
       const res = await fetch(`/api/playerStats?uid=${uid}`);
-      const data = await res.json();
+      const data: { success: boolean; player?: Player } = await res.json();
 
       if (data.success && data.player) {
-        player.name = data.player.name || displayName || "Unknown";
-        player.rating = data.player.elo;
-        player.wins = data.player.wins;
-        player.losses = data.player.losses;
-        player.ranking = data.player.rank.toString();
+        const mapped: PlayerData = {
+          name: data.player.name || displayName || "Unknown",
+          rating: data.player.elo,
+          wins: data.player.wins,
+          losses: data.player.losses,
+          ranking: data.player.rank.toString(),
+        };
+
+        playerData.set(mapped);
       }
     } catch (err) {
       console.error("Error fetching player stats:", err);
     }
   }
 
-  async function fetchGeminiComment() {
+  export async function fetchGeminiComment(name: string, ranking: string): Promise<void> {
     try {
       const res = await fetch("/api/geminiResponse", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          playerName: player.name,
-          position: player.ranking
-        })
+        body: JSON.stringify({ playerName: name, position: ranking }),
       });
 
-      const data = await res.json();
-      ai_response = data.comment ?? "";
-    } catch (error) {
-      console.error("Error fetching ai response:", error);
+      const data: { comment?: string } = await res.json();
+      aiResponse.set(data.comment ?? "");
+    } catch (err) {
+      console.error("Error fetching ai response:", err);
+    }
+  }
+
+  export async function refreshPlayerData(uid: string, displayName: string | null): Promise<void> {
+    await fetchPlayerStats(uid, displayName);
+
+    let snapshot: PlayerData | null = null;
+    const unsubscribe = playerData.subscribe((v) => (snapshot = v));
+    unsubscribe();
+
+    if (snapshot) {
+      await fetchGeminiComment(snapshot.name, snapshot.ranking);
     }
   }
 
   async function loadPlayerData(uid: string, displayName: string | null) {
     await fetchPlayerStats(uid, displayName);
-    await fetchGeminiComment();
+    await fetchGeminiComment(displayName, player.ranking);
   }
 
   onMount(() => {
