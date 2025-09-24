@@ -17,27 +17,27 @@
   });
 
   async function loginWithGoogle() {
-    if (!auth) return; // SSR safety
+    if (!auth) return;
 
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      console.log("Logged in user:", user);
-
       if (!user) return;
 
-      // Reference to player document
       const playerRef = doc(db, "players", user.uid);
-
-      // Check if player already exists
       const playerSnap = await getDoc(playerRef);
 
+      const playerData = {
+        name: user.displayName || "Unknown Player",
+        email: user.email || "",
+        photoURL: user.photoURL || "",
+        updatedAt: new Date().toISOString()
+      };
+
       if (!playerSnap.exists()) {
-        // Create player in Firestore
         await setDoc(playerRef, {
-          name: user.displayName || "Unknown Player",
-          email: user.email || "",
+          ...playerData,
           wins: 0,
           losses: 0,
           elo: 1000,
@@ -45,7 +45,9 @@
         });
         console.log("Player document created in Firestore");
       } else {
-        console.log("Player already exists");
+        // Update existing user with photoURL if missing or changed
+        await setDoc(playerRef, playerData, { merge: true });
+        console.log("Existing player updated with photoURL");
       }
 
     } catch (error) {
