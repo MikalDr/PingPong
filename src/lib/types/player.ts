@@ -3,4 +3,5 @@ export interface Player {
   wins: number;
   losses: number;
   elo: number;
+  photoURL: string;
 }
