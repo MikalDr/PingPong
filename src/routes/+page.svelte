@@ -24,42 +24,30 @@
 
   <div class="profile-wrapper">
     {#if $playerData}
-      {#if $playerData?.photoURL}
-        <img src="{$playerData.photoURL}" alt="Profile Picture" class="profile-pic" />
-      {/if}
-      <div class="profile-card">
-        <h1 class="player-name">{$playerData.name}</h1>
-        <div class="stats-row">
-          <div class="stat">
-            <h3>ELO:</h3>
-            <h3>{$playerData.rating}</h3>
+      <div class="profile-row">
+        {#if $playerData?.photoURL}
+          <img src="{$playerData.photoURL}" alt="Profile Picture" class="profile-pic" />
+        {/if}
+        <div class="stats-column">
+          <div class="stat-row">
+            <span class="stat-label">ELO:</span>
+            <span class="stat-value">{$playerData.rating}</span>
           </div>
-        </div>
-        <div class="stats-row">
-          <div class="stat">
-            <h3>W:</h3>
-            <h3>{$playerData.wins}</h3>
-          </div>
-          <div class="stat">
-            <h3>L:</h3>
-            <h3>{$playerData.losses}</h3>
-          </div>
-          <div class="stat">
-            <h3>Win%:</h3>
-            <h3>
+          <div class="stat-row">
+            <span class="stat-label">W:</span>
+            <span class="stat-value">{$playerData.wins}</span>
+            <span class="stat-label">L:</span>
+            <span class="stat-value">{$playerData.losses}</span>
+            <span class="stat-label">Win%:</span>
+            <span class="stat-value">
               {$playerData.wins + $playerData.losses > 0
                 ? (($playerData.wins / ($playerData.wins + $playerData.losses)) * 100).toFixed(1)
                 : 0}%
-            </h3>
+            </span>
           </div>
         </div>
-
-        {#if $aiResponse}
-          <div class="speech-bubble pop">{$aiResponse}</div>
-        {:else}
-          <div class="speech-bubble typing"><span></span><span></span><span></span></div>
-        {/if}
       </div>
+
     {:else}
       <p>Loading player...</p>
     {/if}
@@ -91,22 +79,42 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: auto;
-    flex-direction: row;
+    height: 100vh;
   }
 
-  .profile-card {
+  .profile-row {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: 1.5rem;
   }
+
   .profile-pic {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     object-fit: cover;
-    flex-shrink: 0;  
+  }
+
+  .stats-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .stat-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .stat-label {
+    font-weight: bold;
+  }
+
+  .stat-value {
+    min-width: 40px;
+    text-align: right;
   }
 
   p { margin: 0; }
@@ -182,16 +190,6 @@
 .speech-bubble.typing span:nth-child(3) {
   animation-delay: 0.4s;
 }
-
-  .stats-row {
-    display: flex;
-    flex-direction: row;
-    gap: 2rem;
-    justify-content: center;
-  }
-  .stat{
-    display: inline;
-  }
 
 .speech-bubble.typing span:nth-child(1) { animation-delay: 0s; }
 .speech-bubble.typing span:nth-child(2) { animation-delay: 0.2s; }
