@@ -82,6 +82,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-bottom: 3rem;
+    width: 100%;
+    border-bottom: 2px solid gray;
   }
 
   .profile-row {
