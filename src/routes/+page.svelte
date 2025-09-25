@@ -30,6 +30,9 @@
         {/if}
         <div class="stats-column">
           <div class="stat-row">
+            <span class="stat-label">{$playerData.name}</span>
+          </div>
+          <div class="stat-row">
             <span class="stat-label">ELO:</span>
             <span class="stat-value">{$playerData.rating}</span>
           </div>
@@ -79,7 +82,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
   }
 
   .profile-row {
@@ -105,6 +107,7 @@
   .stat-row {
     display: flex;
     gap: 1rem;
+    justify-content: center;
     align-items: center;
   }
 
@@ -169,7 +172,7 @@
   color: #fff;
   display: flex;
   justify-content: flex-start;
-  gap: 12px; /* increased spacing between dots */
+  gap: 12px;
 }
 
 .speech-bubble.typing span {
