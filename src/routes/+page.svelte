@@ -30,7 +30,7 @@
         {/if}
         <div class="stats-column">
           <div class="stat-row">
-            <span class="stat-label">{$playerData.name}</span>
+            <h1 class="stat-label">{$playerData.name}</h1>
           </div>
           <div class="stat-row">
             <span class="stat-label">ELO:</span>
@@ -78,6 +78,9 @@
 
 
 <style>
+  .column {
+    gap: 2rem;
+  }
   .profile-wrapper {
     display: flex;
     justify-content: center;
